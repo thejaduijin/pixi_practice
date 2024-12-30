@@ -1,25 +1,73 @@
 const app = new PIXI.Application();
-globalThis.__PIXI_APP__ = app;
 
 await app.init({ background: '#1099bb', resizeTo: window });
-document.body.appendChild(app.view);
+document.body.appendChild(app.canvas);
 
 
-await PIXI.Assets.load('./images/logo.png');
-let sprite = PIXI.Sprite.from('./images/logo.png');
+await PIXI.Assets.load('./assets/loading-screen/Loading_Screen_Background.png');
+let backgroundImage = PIXI.Sprite.from('./assets/loading-screen/Loading_Screen_Background.png');
+backgroundImage.anchor.set(1);
+backgroundImage.width = window.innerWidth;
+backgroundImage.height = window.innerHeight;
 
+// app.stage.addChild(backgroundImage);
 
-app.stage.addChild(sprite);
+const backgroundImageContainer = new PIXI.Container({
+    x: app.screen.width,
+    y: app.screen.height
+});
+backgroundImageContainer.addChild(backgroundImage);
+app.stage.addChild(backgroundImageContainer);
 
-let elapsed = 0.0;
-app.ticker.add((ticker) => {
-    elapsed += ticker.deltaTime;
-    sprite.x = 100.0 + Math.cos(elapsed / 50.0) * 100.0;
+const label = new PIXI.Text({
+    text: 'I AM PIXI TEXT',
+    style: { fill: '#ffffff' },
+    position: { x: app.screen.width / 2, y: 0 }
 });
 
+app.stage.addChild(label);
 
-// let elapsed1 = 0.0;
-// app.ticker.add((ticker) => {
-//     elapsed1 += ticker.deltaTime;
-//     sprite.y = 100.0 + Math.cos(elapsed1 / 50.0) * 100.0;
-// });
+
+const uiContainer = new PIXI.Container({
+    x: 0,
+    y: 0,
+});
+
+await PIXI.Assets.load('./assets/reelFrame.png');
+let reelFrame = PIXI.Sprite.from('./assets/reelFrame.png');
+reelFrame.anchor.set(0.5); // Center the anchor point
+reelFrame.width = app.screen.width / 1.5;
+reelFrame.height = app.screen.height / 1.5;
+reelFrame.x = app.screen.width / 2;
+reelFrame.y = app.screen.height / 2;
+
+uiContainer.name = "UiContainer"
+uiContainer.addChild(reelFrame)
+app.stage.addChild(uiContainer);
+
+
+// Handle resizing
+function onResize() {
+    if (window.innerWidth < 600) {
+        return;
+    }
+    backgroundImageContainer.x = app.screen.width;
+    backgroundImageContainer.y = app.screen.height;
+    backgroundImageContainer.width = window.innerWidth;
+    backgroundImageContainer.height = window.innerHeight;
+
+    label.x = app.screen.width / 2;
+    label.y = 0;
+
+    reelFrame.width = app.screen.width / 1.5;
+    reelFrame.height = app.screen.height / 1.5;
+    reelFrame.x = app.screen.width / 2;
+    reelFrame.y = app.screen.height / 2;
+}
+
+// Listen for resize events
+window.addEventListener('resize', onResize);
+
+// Initial resize
+onResize();
+
