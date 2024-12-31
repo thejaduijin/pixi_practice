@@ -48,7 +48,12 @@ app.stage.addChild(uiContainer);
 
 // Handle resizing
 function onResize() {
-    if (window.innerWidth < 600) {
+    if (window.innerWidth >= 1150) {
+        reelFrame.scale.set(0.8);
+    } else if (window.innerWidth >= 780) {
+        reelFrame.scale.set(0.6);
+    } else if (window.innerWidth < 780) {
+        reelFrame.scale.set(0.4);
         return;
     }
     backgroundImageContainer.x = app.screen.width;
@@ -59,10 +64,11 @@ function onResize() {
     label.x = app.screen.width / 2;
     label.y = 0;
 
-    reelFrame.width = app.screen.width / 1.5;
-    reelFrame.height = app.screen.height / 1.5;
+    // reelFrame.width = app.screen.width / 1.5;
+    // reelFrame.height = app.screen.height / 1.5;
     reelFrame.x = app.screen.width / 2;
     reelFrame.y = app.screen.height / 2;
+
 }
 
 // Listen for resize events
